@@ -1,8 +1,16 @@
-observed_only_wam nominal success=0.532 tail_risk=0.468
-observed_only_wam hidden_mode_shift success=0.168 tail_risk=0.833
-augmentation_as_data_wam nominal success=0.650 tail_risk=0.350
-augmentation_as_data_wam hidden_mode_shift success=0.258 tail_risk=0.742
-scalar_uncertainty_wam nominal success=0.657 tail_risk=0.343
-scalar_uncertainty_wam hidden_mode_shift success=0.318 tail_risk=0.682
-proposed_branch_mechanism nominal success=0.772 tail_risk=0.228
-proposed_branch_mechanism hidden_mode_shift success=0.565 tail_risk=0.435
+Submission-hardening experiment for paper 89 embodied_attention_budgeting
+Seven seeds, 600 episodes per seed, strong baselines, ablations, stress sweep, and negative cases.
+observed_only_behavior_clone hidden_mode_shift mean_success=0.4176 ci95=0.0145 tail=0.5824
+observed_only_behavior_clone combined_stress mean_success=0.3298 ci95=0.0126 tail=0.6702
+data_augmentation_wam hidden_mode_shift mean_success=0.4886 ci95=0.0142 tail=0.5114
+data_augmentation_wam combined_stress mean_success=0.4224 ci95=0.0183 tail=0.5776
+scalar_uncertainty_planner hidden_mode_shift mean_success=0.5638 ci95=0.0180 tail=0.4362
+scalar_uncertainty_planner combined_stress mean_success=0.4957 ci95=0.0171 tail=0.5043
+ensemble_disagreement_planner hidden_mode_shift mean_success=0.5998 ci95=0.0156 tail=0.4002
+ensemble_disagreement_planner combined_stress mean_success=0.5441 ci95=0.0178 tail=0.4559
+conformal_risk_filter hidden_mode_shift mean_success=0.6105 ci95=0.0145 tail=0.3895
+conformal_risk_filter combined_stress mean_success=0.5590 ci95=0.0086 tail=0.4410
+proposed_branch_mechanism hidden_mode_shift mean_success=0.6871 ci95=0.0155 tail=0.3129
+proposed_branch_mechanism combined_stress mean_success=0.6719 ci95=0.0168 tail=0.3281
+oracle_branch_upper_bound hidden_mode_shift mean_success=0.7667 ci95=0.0086 tail=0.2333
+oracle_branch_upper_bound combined_stress mean_success=0.7681 ci95=0.0074 tail=0.2319
