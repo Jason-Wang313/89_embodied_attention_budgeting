@@ -1,16 +1,36 @@
-Submission-hardening experiment for paper 89 embodied_attention_budgeting
-Seven seeds, 600 episodes per seed, strong baselines, ablations, stress sweep, and negative cases.
-observed_only_behavior_clone hidden_mode_shift mean_success=0.4176 ci95=0.0145 tail=0.5824
-observed_only_behavior_clone combined_stress mean_success=0.3298 ci95=0.0126 tail=0.6702
-data_augmentation_wam hidden_mode_shift mean_success=0.4886 ci95=0.0142 tail=0.5114
-data_augmentation_wam combined_stress mean_success=0.4224 ci95=0.0183 tail=0.5776
-scalar_uncertainty_planner hidden_mode_shift mean_success=0.5638 ci95=0.0180 tail=0.4362
-scalar_uncertainty_planner combined_stress mean_success=0.4957 ci95=0.0171 tail=0.5043
-ensemble_disagreement_planner hidden_mode_shift mean_success=0.5998 ci95=0.0156 tail=0.4002
-ensemble_disagreement_planner combined_stress mean_success=0.5441 ci95=0.0178 tail=0.4559
-conformal_risk_filter hidden_mode_shift mean_success=0.6105 ci95=0.0145 tail=0.3895
-conformal_risk_filter combined_stress mean_success=0.5590 ci95=0.0086 tail=0.4410
-proposed_branch_mechanism hidden_mode_shift mean_success=0.6871 ci95=0.0155 tail=0.3129
-proposed_branch_mechanism combined_stress mean_success=0.6719 ci95=0.0168 tail=0.3281
-oracle_branch_upper_bound hidden_mode_shift mean_success=0.7667 ci95=0.0086 tail=0.2333
-oracle_branch_upper_bound combined_stress mean_success=0.7681 ci95=0.0074 tail=0.2319
+Paper 89 embodied_attention_budgeting v4 rebuild
+Terminal recommendation: KILL_ARCHIVE
+Reason: deterministic local attention-budget benchmark added; no robot hardware or implemented foundation-model attention module is available.
+Main rollout rows: 47040
+Ablation rollout rows: 8232
+Stress rollout rows: 141120
+Seeds: [0, 1, 2, 3, 4, 5, 6]
+
+Combined hard shift:
+uniform_attention_budget task_success=0.24065 ci95=0.02082 recall=0.17518 wasted=0.67667 compute=3.32825 latency=0.32398 safety=0.31718 regret=0.52198 calibration=0.05261
+token_salience_transformer task_success=0.07313 ci95=0.01291 recall=0.02441 wasted=0.95167 compute=3.34274 latency=0.32993 safety=0.41667 regret=0.73901 calibration=0.02184
+uncertainty_attention task_success=0.20493 ci95=0.01244 recall=0.14852 wasted=0.69594 compute=3.35923 latency=0.34014 safety=0.32483 regret=0.53448 calibration=0.05045
+active_perception_value task_success=0.62925 ci95=0.03073 recall=0.50518 wasted=0.11778 compute=3.32227 latency=0.30357 safety=0.19473 regret=0.15196 calibration=0.13383
+compute_adaptive_policy task_success=0.42262 ci95=0.00986 recall=0.31663 wasted=0.47277 compute=3.33075 latency=0.35204 safety=0.26276 regret=0.36253 calibration=0.08291
+risk_aware_attention task_success=0.67602 ci95=0.02113 recall=0.51908 wasted=0.10101 compute=3.32581 latency=0.32228 safety=0.15816 regret=0.13880 calibration=0.13782
+embodied_consequence_budgeting task_success=0.69303 ci95=0.02890 recall=0.56165 wasted=0.06226 compute=3.32467 latency=0.32483 safety=0.16327 regret=0.10547 calibration=0.14224
+oracle_consequence_attention task_success=0.71344 ci95=0.02614 recall=0.56687 wasted=0.05324 compute=3.32613 latency=0.32993 safety=0.14541 regret=0.09795 calibration=0.14301
+paired task-success diff vs best success baseline risk_aware_attention=0.01701 ci95=0.04077
+
+Ablations:
+full_embodied_consequence_budgeting task_success=0.69303 ci95=0.02890 recall=0.56165 wasted=0.06226 compute=3.32467 latency=0.32483 safety=0.16327 regret=0.10547
+minus_physical_consequence_estimator task_success=0.23214 ci95=0.02658 recall=0.16467 wasted=0.67321 compute=3.33531 latency=0.31378 safety=0.34183 regret=0.50654
+minus_action_critical_contact_map task_success=0.70493 ci95=0.04080 recall=0.53279 wasted=0.09082 compute=3.32009 latency=0.31378 safety=0.15391 regret=0.13123
+minus_compute_latency_constraint task_success=0.68878 ci95=0.02273 recall=0.55663 wasted=0.04912 compute=3.32106 latency=0.31463 safety=0.15561 regret=0.10390
+minus_safety_hazard_term task_success=0.69473 ci95=0.02156 recall=0.54475 wasted=0.07513 compute=3.32686 latency=0.31888 safety=0.19218 regret=0.12135
+token_salience_only_budget task_success=0.06293 ci95=0.01045 recall=0.02441 wasted=0.95167 compute=3.34274 latency=0.32993 safety=0.41667 regret=0.73901
+uncertainty_only_budget task_success=0.22704 ci95=0.02091 recall=0.14852 wasted=0.69594 compute=3.35923 latency=0.34014 safety=0.33163 regret=0.53448
+
+Combined stress level 1.0:
+token_salience_transformer task_success=0.05536 ci95=0.01050 recall=0.02327 wasted=0.94673 compute=2.67577 latency=0.32857 safety=0.48393
+uncertainty_attention task_success=0.19107 ci95=0.01666 recall=0.11847 wasted=0.70625 compute=2.68160 latency=0.30714 safety=0.42321
+active_perception_value task_success=0.57857 ci95=0.04921 recall=0.44738 wasted=0.09836 compute=2.69826 latency=0.33750 safety=0.26429
+compute_adaptive_policy task_success=0.31964 ci95=0.02611 recall=0.23219 wasted=0.53631 compute=2.71826 latency=0.29464 safety=0.37143
+risk_aware_attention task_success=0.61786 ci95=0.04102 recall=0.45598 wasted=0.08765 compute=2.70202 latency=0.34464 safety=0.28393
+embodied_consequence_budgeting task_success=0.60179 ci95=0.01356 recall=0.48555 wasted=0.07470 compute=2.73773 latency=0.35357 safety=0.21250
+oracle_consequence_attention task_success=0.63393 ci95=0.03845 recall=0.48767 wasted=0.06860 compute=2.73552 latency=0.38036 safety=0.22857

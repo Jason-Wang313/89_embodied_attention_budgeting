@@ -4,42 +4,156 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{booktabs}
-\title{Embodied Attention Budgeting: ICLR Main-Conference Gate Archive}
+\usepackage{graphicx}
+
+\graphicspath{{../figures/}}
+
+\title{Embodied Attention Budgeting:\\A Negative ICLR-Main Evidence Audit}
 \author{Anonymous Authors}
+
 \begin{document}
 \maketitle
+
 \begin{abstract}
-This document is not an ICLR main-conference submission. It is the v3 main-conference gate for a generated robotics draft about robot foundation model efficiency. The original research bet was: Allocate perception and action attention by physical consequence rather than token salience. After a stricter hostile review, the honest terminal decision is \textbf{KILL/ARCHIVE}. Submission-hardening version: v3.
+Foundation-model policies often allocate attention according to visual or linguistic token salience. The hypothesis tested here is that robot policies should instead allocate perception and action attention by physical consequence: contacts, hazards, occlusions, and action-critical regions that change the outcome should receive budget even when visually unremarkable. We rebuilt this generated paper around a deterministic local attention-budget benchmark with four manipulation tasks, five distribution shifts, eight methods, seven seeds, 47,040 main rollouts, 8,232 ablation rollouts, and 141,120 stress rollouts. The result is promising but not submission-ready. On the combined hard-shift split, embodied consequence budgeting reaches 0.693 task success, 0.562 critical-event recall, and 0.062 wasted attention. However, risk-aware attention reaches 0.676 task success and the paired gain is only $0.017 \pm 0.041$. An ablation without the action-critical contact map reaches 0.705 success, and at maximum combined stress risk-aware attention beats the proposed method. We therefore mark this paper \textbf{KILL/ARCHIVE}: physical-consequence attention is useful, but the present mechanism does not support an ICLR-main-target claim.
 \end{abstract}
 
-\section{Gate Decision}
-The v2 paper was workshop-only. Under the active ICLR-main standard, that is insufficient. The local artifacts contain synthetic multi-seed diagnostics, but no real-robot validation, high-fidelity simulator benchmark, trained world-action model, implemented real baselines, or manual full-paper related-work synthesis. These missing items are not recoverable by editing text or rerunning the synthetic script.
+\section{Terminal Decision}
+\textbf{Decision: KILL/ARCHIVE for ICLR main.} The v4 repository contains a paper-specific attention-budget benchmark, implemented baselines, ablations, stress sweeps, figures, negative cases, and reproducibility files. The evidence shows that token salience is a poor control allocation rule, but it does not show that the proposed consequence-budgeting mechanism is decisively better than strong risk-aware or active-perception baselines.
 
-\section{Fatal ICLR-Main Blockers}
+\section{Research Question}
+The intended claim was:
+\begin{quote}
+Allocate perception and action attention by physical consequence rather than token salience.
+\end{quote}
+This is a meaningful embodied-learning distinction. A visually salient object may be harmless, while a visually dull contact edge, hidden support surface, fragile obstacle, or cable snag may decide the task. A useful policy must trade off critical-event recall, wasted attention, compute cost, latency, and safety.
+
+\section{Hostile Prior Work}
+The local hostile set includes embodied foundation models, robot foundation-model surveys, physical-risk control, embodied VLA systems, and work warning that attention weights often capture correlations rather than causal task structure. Therefore, the paper cannot claim novelty from generic attention, token pruning, active perception, uncertainty, or compute adaptation. The benchmark tests whether physical consequence changes budget allocation and downstream robot behavior.
+
+\section{Benchmark}
+The v4 benchmark simulates four settings:
 \begin{itemize}
-\item Evidence is synthetic and generated from a shared batch template.
-\item Baselines are diagnostic probability models, not implemented competing robot systems.
-\item Ablations do not correspond to a trained model checkpoint.
-\item No hardware, high-fidelity benchmark, qualitative rollouts, or failure videos are available.
-\item Related work is based on pool slices and hostile metadata, not a manual full-paper synthesis.
-\item Claims would be misleading if framed as ICLR-main empirical robotics evidence.
+\item \textbf{cluttered pick-and-place} with distractors and hidden support surfaces.
+\item \textbf{mobile manipulation} around fragile obstacles.
+\item \textbf{tool-use sequencing} with low-salience but high-consequence contact points.
+\item \textbf{deformable cable routing} with latent snags and occlusion.
+\end{itemize}
+Each episode samples candidate perception/action tokens with visual salience, language salience, uncertainty, physical consequence, hazard level, action-criticality, compute cost, and a true critical-token label. A method spends a fixed attention budget before acting. Splits include balanced nominal, visual distractor shift, physical consequence shift, tight compute budget, and combined hard shift.
+
+\section{Methods}
+We compare:
+\begin{itemize}
+\item \textbf{Uniform attention budget:} spends budget without learned prioritization.
+\item \textbf{Token-salience transformer:} ranks by visual and language salience.
+\item \textbf{Uncertainty attention:} prioritizes uncertain tokens.
+\item \textbf{Active perception value:} blends uncertainty and estimated action value.
+\item \textbf{Compute-adaptive policy:} normalizes attention value by compute cost.
+\item \textbf{Risk-aware attention:} emphasizes hazard and uncertainty.
+\item \textbf{Embodied consequence budgeting:} the proposed physical-consequence, action-critical, hazard-aware budget.
+\item \textbf{Oracle consequence attention:} hidden true physical score.
 \end{itemize}
 
-\section{Hostile Prior-Work Pressure}
-The closest local hostile records include:
+\section{Main Results}
+Table~\ref{tab:main} reports the combined hard-shift split. The proposed method is much better than token salience and uncertainty-only attention, which waste budget on distractors or uncertain but harmless tokens. However, the margin over risk-aware attention is not decisive. Risk-aware attention reaches 0.676 success, while consequence budgeting reaches 0.693, for a paired success difference of $0.01701 \pm 0.04077$.
+
+\begin{table}[h]
+\centering
+\caption{Combined hard-shift results over seven seeds. Confidence intervals are 95\% intervals over seed means. Lower wasted attention, latency violation, safety violation, and regret are better.}
+\label{tab:main}
+\begin{tabular}{lrrrrr}
+\toprule
+Method & Success & Recall & Wasted & Safety & Regret \\
+\midrule
+Uniform & $0.241 \pm 0.021$ & $0.175$ & $0.677$ & $0.317$ & $0.522$ \\
+Token salience & $0.073 \pm 0.013$ & $0.024$ & $0.952$ & $0.417$ & $0.739$ \\
+Uncertainty & $0.205 \pm 0.012$ & $0.149$ & $0.696$ & $0.325$ & $0.534$ \\
+Active perception & $0.629 \pm 0.031$ & $0.505$ & $0.118$ & $0.195$ & $0.152$ \\
+Compute adaptive & $0.423 \pm 0.010$ & $0.317$ & $0.473$ & $0.263$ & $0.363$ \\
+Risk aware & $0.676 \pm 0.021$ & $0.519$ & $0.101$ & $\mathbf{0.158}$ & $0.139$ \\
+Consequence budget & $\mathbf{0.693 \pm 0.029}$ & $0.562$ & $0.062$ & $0.163$ & $0.105$ \\
+Oracle consequence & $0.713 \pm 0.026$ & $\mathbf{0.567}$ & $\mathbf{0.053}$ & $0.145$ & $\mathbf{0.098}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\linewidth]{attention_budget_success.png}
+\caption{Task success across attention-budget shifts. Consequence budgeting is useful but not decisively ahead of risk-aware attention.}
+\label{fig:success}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.88\linewidth]{attention_budget_quality.png}
+\caption{Combined hard-shift success, critical-event recall, and wasted attention. Token salience wastes budget under visual distractors.}
+\label{fig:quality}
+\end{figure}
+
+\section{Ablations}
+The ablations do not validate the proposed mechanism. Removing the physical consequence estimator collapses performance, so consequence information matters. But removing the action-critical contact map improves task success to 0.705, and removing the safety term also slightly improves success while worsening safety. This means the full design is not uniquely justified.
+
+\begin{table}[h]
+\centering
+\caption{Embodied attention-budget ablations on combined hard shift.}
+\label{tab:ablation}
+\begin{tabular}{lrrrr}
+\toprule
+Ablation & Success & Recall & Wasted & Safety \\
+\midrule
+Full consequence budgeting & $0.693 \pm 0.029$ & $\mathbf{0.562}$ & $0.062$ & $0.163$ \\
+Minus physical consequence & $0.232 \pm 0.027$ & $0.165$ & $0.673$ & $0.342$ \\
+Minus action-critical map & $\mathbf{0.705 \pm 0.041}$ & $0.533$ & $0.091$ & $\mathbf{0.154}$ \\
+Minus compute-latency constraint & $0.689 \pm 0.023$ & $0.557$ & $\mathbf{0.049}$ & $0.156$ \\
+Minus safety hazard term & $0.695 \pm 0.022$ & $0.545$ & $0.075$ & $0.192$ \\
+Token-salience only & $0.063 \pm 0.010$ & $0.024$ & $0.952$ & $0.417$ \\
+Uncertainty only & $0.227 \pm 0.021$ & $0.149$ & $0.696$ & $0.332$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.88\linewidth]{attention_budget_ablation.png}
+\caption{Ablation success. A core ablation exceeds the full method, so the proposed design fails a mechanism gate.}
+\label{fig:ablation}
+\end{figure}
+
+\section{Stress Tests}
+Stress sweeps vary visual distractor load, occlusion, compute-budget tightening, latency penalty, hidden physical consequence, and combined stress. At maximum combined stress, risk-aware attention reaches 0.618 task success, while consequence budgeting reaches 0.602. The proposed method has better safety at that point, but the success reversal weakens the submission claim.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.88\linewidth]{attention_budget_stress_sweep.png}
+\caption{Combined stress sweep. Risk-aware attention slightly exceeds consequence budgeting at maximum stress.}
+\label{fig:stress}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.86\linewidth]{attention_budget_safety_compute.png}
+\caption{Safety and compute pressure. Consequence budgeting is competitive, but not a decisive Pareto improvement.}
+\label{fig:safety}
+\end{figure}
+
+\section{Why This Is Not Submission-Ready}
+The project fails the ICLR-main readiness gate for four reasons.
 \begin{itemize}
-\item Systematic evaluation of single-cell foundation model interpretability reveals attention captures co-expression rather than unique regulatory signal (n.d.)
-\item HY-Embodied-0.5: Embodied Foundation Models for Real-World Agents (2026)
-\item Embodied Intelligence: A Synergy of Morphology, Action, Perception and Learning (2025)
-\item Transforming Monolithic Foundation Models into Embodied Multi-Agent Architectures for Human-Robot Collaboration (2025)
-\item Aligning Cyber Space with Physical World: A Comprehensive Survey on Embodied AI (2024)
+\item \textbf{Non-decisive baseline margin.} The paired success gain over risk-aware attention is only $0.01701 \pm 0.04077$.
+\item \textbf{Ablation contradiction.} Removing the action-critical contact map improves success.
+\item \textbf{Stress reversal.} Risk-aware attention beats the proposed method at maximum combined stress.
+\item \textbf{Evidence ceiling.} The benchmark is deterministic and reproducible but local; there is no robot hardware, accepted external benchmark, or implemented foundation-model attention module.
 \end{itemize}
-These works make generic world models, uncertainty, model-based planning, and robot policy robustness crowded. Without real empirical evidence, the remaining novelty boundary is too weak for ICLR main.
 
-\section{What Remains Useful}
-The archive is still useful as an idea seed and reproducibility scaffold. The synthetic code, stress-test CSVs, reviewer attacks, and novelty-boundary docs can inform a future project. The correct next step is not more paper polishing; it is new evidence: implemented models, real baselines, manual related work, and robot or high-fidelity simulator validation.
+\section{Reproducibility}
+Run the benchmark from the repository root:
+\begin{verbatim}
+python src\run_experiment.py
+\end{verbatim}
+The script writes rollout CSVs, seed-level metrics, pairwise statistics, ablations, stress sweeps, negative cases, summary text, and the figures used in this manuscript. The canonical local PDF is \texttt{C:/Users/wangz/Downloads/89.pdf}.
 
-\section{Terminal Action}
-Decision: \textbf{KILL/ARCHIVE for ICLR main}. Do not submit this paper to ICLR main in the current form. Revival requires a substantially new empirical project.
+\section{Conclusion}
+Embodied attention should not be reduced to token salience. The v4 benchmark demonstrates that physical consequence and risk matter. But the proposed mechanism is not yet a submission-ready answer: it is statistically too close to risk-aware attention, contradicted by ablations, and not validated externally. The honest terminal action is \textbf{KILL/ARCHIVE}.
 
 \end{document}

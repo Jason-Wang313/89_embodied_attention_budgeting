@@ -1,4 +1,5 @@
-case,expected_behavior,observed_success,lesson
-unmodeled_hardware_damage,planner abstains or requests human inspection,0.18,branch semantics cannot repair missing actuation
-semantic_goal_ambiguity,diagnostic physical probes do not solve language ambiguity,0.31,needs a separate instruction-grounding loop
-adversarial_sensor_dropout,tail-risk objective becomes conservative,0.39,sensor-health modeling is out of scope
+case,expected_behavior,observed_outcome,lesson
+low_salience_catastrophic_contact,allocate budget to low-token-salience contact with high consequence,consequence budgeting helps but still misses contacts when occluded and compute is tight,"physical consequence must be estimated before budget allocation, not assumed"
+visually_salient_but_harmless_distractor,ignore distractor even if language mentions it,token salience wastes attention; consequence budget reduces but does not eliminate waste,token attention is not a reliable control explanation
+safety_hazard_requires_extra_compute,spend compute despite latency risk,compute-latency constraint can suppress necessary hazard attention,safety constraints should override budget pressure
+deformable_snag_after_action,reallocate action attention online,single-shot budget cannot recover after late snag,receding-horizon attention is needed for deployment
